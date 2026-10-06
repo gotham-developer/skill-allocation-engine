@@ -75,18 +75,7 @@ public final class Trainee {
 
     @Override
     public String toString() {
-        return "Trainee{" +
-               "id=" +
-               id +
-               ", name='" +
-               name +
-               '\'' +
-               ", skill='" +
-               skill +
-               '\'' +
-               ", allocated=" +
-               isAllocated() +
-               '}';
+        return "Trainee{" + "id=" + id + ", name='" + name + '\'' + ", skill='" + skill + '\'' + ", allocated=" + isAllocated() + '}';
     }
 
 }

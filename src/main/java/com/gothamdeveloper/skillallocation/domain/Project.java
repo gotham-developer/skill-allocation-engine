@@ -7,13 +7,13 @@ import java.util.Set;
 
 public final class Project {
 
-    private final long    id;
-    private final String  name;
-    private final int     duration;
-    private final Skill   requiredSkill;
-    private final Manager manager;
+    private final long         id;
+    private final String       name;
+    private final int          duration;
+    private final Skill        requiredSkill;
+    private final Manager      manager;
     private final Set<Trainee> trainees = new LinkedHashSet<>();
-    private int openings;
+    private       int          openings;
 
     public Project(long id, String name, int duration, Skill requiredSkill, int openings, Manager manager) {
         if (id <= 0) {
@@ -114,24 +114,7 @@ public final class Project {
 
     @Override
     public String toString() {
-        return "Project{" +
-               "id=" +
-               id +
-               ", name='" +
-               name +
-               '\'' +
-               ", duration=" +
-               duration +
-               ", requiredSkill='" +
-               requiredSkill +
-               '\'' +
-               ", openings=" +
-               openings +
-               ", manager=" +
-               manager.getId() +
-               ", allocatedTrainees=" +
-               trainees.size() +
-               '}';
+        return "Project{" + "id=" + id + ", name='" + name + '\'' + ", duration=" + duration + ", requiredSkill='" + requiredSkill + '\'' + ", openings=" + openings + ", manager=" + manager.getId() + ", allocatedTrainees=" + trainees.size() + '}';
     }
 
 }

@@ -61,11 +61,7 @@ public final class Manager {
 
     @Override
     public String toString() {
-        return "Manager{"
-               + "id=" + id
-               + ", name='" + name + '\''
-               + ", projectCount=" + projects.size()
-               + '}';
+        return "Manager{" + "id=" + id + ", name='" + name + '\'' + ", projectCount=" + projects.size() + '}';
     }
 
 }

@@ -24,7 +24,7 @@ public final class AllocationBenchmark {
         BenchmarkResult sequential = measure(sequentialStrategy, projectCount, traineeCount);
         BenchmarkResult concurrent = measure(concurrentStrategy, projectCount, traineeCount);
 
-        return new BenchmarkResult[]{sequential, concurrent};
+        return new BenchmarkResult[]{ sequential, concurrent };
     }
 
     private void validateCounts(int projectCount, int traineeCount) {
@@ -66,8 +66,12 @@ public final class AllocationBenchmark {
 
         long averageNanos = totalNanos / MEASUREMENT_RUNS;
 
-        return new BenchmarkResult(strategy.getName(), projectCount, traineeCount, lastResult.traineesAllocated(),
-                                   lastResult.unfilledOpenings(), averageNanos);
+        return new BenchmarkResult(strategy.getName(),
+                                   projectCount,
+                                   traineeCount,
+                                   lastResult.traineesAllocated(),
+                                   lastResult.unfilledOpenings(),
+                                   averageNanos);
     }
 
 }

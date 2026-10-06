@@ -28,7 +28,8 @@ public final class Main {
         AllocationStrategy sequentialStrategy = new SequentialAllocationStrategy();
         AllocationStrategy concurrentStrategy = new ConcurrentAllocationStrategy();
 
-        SkillAllocationService service = new SkillAllocationService(managerRepository, projectRepository,
+        SkillAllocationService service = new SkillAllocationService(managerRepository,
+                                                                    projectRepository,
                                                                     traineeRepository);
 
         AllocationBenchmark benchmark = new AllocationBenchmark(sequentialStrategy, concurrentStrategy);
@@ -36,7 +37,11 @@ public final class Main {
         ConsoleReader reader = new ConsoleReader();
         ConsoleWriter writer = new ConsoleWriter();
 
-        ApplicationUI applicationUI = new ApplicationUI(service, reader, writer, sequentialStrategy, concurrentStrategy,
+        ApplicationUI applicationUI = new ApplicationUI(service,
+                                                        reader,
+                                                        writer,
+                                                        sequentialStrategy,
+                                                        concurrentStrategy,
                                                         benchmark);
 
         applicationUI.start();

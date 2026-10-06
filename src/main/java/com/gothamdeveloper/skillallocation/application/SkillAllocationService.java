@@ -74,8 +74,12 @@ public class SkillAllocationService {
         manager.addProject(project);
         projectRepository.save(project);
 
-        LOGGER.info("Project added: id={}, name={}, managerId={}, requiredSkill={}, openings={}", project.getId(),
-                    project.getName(), manager.getId(), project.getRequiredSkill(), project.getOpenings());
+        LOGGER.info("Project added: id={}, name={}, managerId={}, requiredSkill={}, openings={}",
+                    project.getId(),
+                    project.getName(),
+                    manager.getId(),
+                    project.getRequiredSkill(),
+                    project.getOpenings());
     }
 
     public AllocationResult allocateProjects(AllocationStrategy strategy) {
@@ -93,8 +97,11 @@ public class SkillAllocationService {
         long elapsedNanos = System.nanoTime() - start;
 
         LOGGER.info("{} allocation completed in {} ms: projectsProcessed={}, traineesAllocated={}, unfilledOpenings={}",
-                    strategy.getName(), elapsedNanos / 1_000_000.0, result.projectsProcessed(),
-                    result.traineesAllocated(), result.unfilledOpenings());
+                    strategy.getName(),
+                    elapsedNanos / 1_000_000.0,
+                    result.projectsProcessed(),
+                    result.traineesAllocated(),
+                    result.unfilledOpenings());
 
         return result;
     }

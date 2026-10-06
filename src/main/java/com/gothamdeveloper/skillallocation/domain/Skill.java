@@ -68,4 +68,5 @@ public enum Skill {
     public String getDisplayName() {
         return displayName;
     }
+
 }

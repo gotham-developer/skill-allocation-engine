@@ -41,6 +41,11 @@ public final class ConcurrentAllocationStrategy implements AllocationStrategy {
         }
     }
 
+    @Override
+    public String getName() {
+        return "Concurrent";
+    }
+
     private List<Callable<Integer>> createTasks(List<Project> projects, List<Trainee> trainees) {
         List<Callable<Integer>> tasks = new ArrayList<>(projects.size());
 
@@ -88,11 +93,6 @@ public final class ConcurrentAllocationStrategy implements AllocationStrategy {
         }
 
         return allocated;
-    }
-
-    @Override
-    public String getName() {
-        return "Concurrent";
     }
 
 }
