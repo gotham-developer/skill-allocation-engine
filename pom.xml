@@ -7,7 +7,7 @@
 
     <!-- Project coordinates -->
     <groupId>com.gothamdeveloper</groupId>
-    <artifactId>skill-allocation</artifactId>
+    <artifactId>skill-allocation-engine</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
