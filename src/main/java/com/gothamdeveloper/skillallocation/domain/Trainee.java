@@ -40,10 +40,6 @@ public final class Trainee {
         return project;
     }
 
-    public boolean isAllocated() {
-        return project != null;
-    }
-
     public boolean hasSkill(Skill requiredSkill) {
         Objects.requireNonNull(requiredSkill, "Required skill must not be null");
 
@@ -60,17 +56,21 @@ public final class Trainee {
         this.project = project;
     }
 
+    public boolean isAllocated() {
+        return project != null;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Trainee trainee)) {
             return false;
         }
         return id == trainee.id && Objects.equals(name, trainee.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
     }
 
     @Override

@@ -12,10 +12,8 @@ public final class Project {
     private final int     duration;
     private final Skill   requiredSkill;
     private final Manager manager;
-
-    private int openings;
-
     private final Set<Trainee> trainees = new LinkedHashSet<>();
+    private int openings;
 
     public Project(long id, String name, int duration, Skill requiredSkill, int openings, Manager manager) {
         if (id <= 0) {
@@ -71,16 +69,6 @@ public final class Project {
         return Collections.unmodifiableSet(trainees);
     }
 
-    public boolean hasAvailableOpening() {
-        return openings > 0;
-    }
-
-    public boolean requiresSkill(Skill skill) {
-        Objects.requireNonNull(skill, "Skill must not be null");
-
-        return requiredSkill == skill;
-    }
-
     public void allocate(Trainee trainee) {
         Objects.requireNonNull(trainee, "Trainee must not be null");
 
@@ -101,17 +89,27 @@ public final class Project {
         openings--;
     }
 
+    public boolean hasAvailableOpening() {
+        return openings > 0;
+    }
+
+    public boolean requiresSkill(Skill skill) {
+        Objects.requireNonNull(skill, "Skill must not be null");
+
+        return requiredSkill == skill;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Project project)) {
             return false;
         }
         return id == project.id && Objects.equals(name, project.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
     }
 
     @Override
@@ -130,7 +128,7 @@ public final class Project {
                ", openings=" +
                openings +
                ", manager=" +
-               manager.getName() +
+               manager.getId() +
                ", allocatedTrainees=" +
                trainees.size() +
                '}';

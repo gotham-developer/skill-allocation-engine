@@ -2,6 +2,9 @@ package com.gothamdeveloper.skillallocation.ui;
 
 import com.gothamdeveloper.skillallocation.application.AllocationResult;
 import com.gothamdeveloper.skillallocation.application.SkillAllocationService;
+import com.gothamdeveloper.skillallocation.application.allocation.AllocationStrategy;
+import com.gothamdeveloper.skillallocation.benchmark.AllocationBenchmark;
+import com.gothamdeveloper.skillallocation.benchmark.BenchmarkResult;
 import com.gothamdeveloper.skillallocation.domain.Skill;
 import com.gothamdeveloper.skillallocation.exception.DuplicateEntityException;
 import com.gothamdeveloper.skillallocation.exception.EntityNotFoundException;
@@ -14,10 +17,23 @@ public final class ApplicationUI {
     private final ConsoleReader          reader;
     private final ConsoleWriter          writer;
 
-    public ApplicationUI(SkillAllocationService service, ConsoleReader reader, ConsoleWriter writer) {
+    private final AllocationStrategy sequentialStrategy;
+    private final AllocationStrategy concurrentStrategy;
+
+    private final AllocationBenchmark benchmark;
+
+    public ApplicationUI(SkillAllocationService service,
+                         ConsoleReader reader,
+                         ConsoleWriter writer,
+                         AllocationStrategy sequentialStrategy,
+                         AllocationStrategy concurrentStrategy,
+                         AllocationBenchmark benchmark) {
         this.service = service;
         this.reader = reader;
         this.writer = writer;
+        this.sequentialStrategy = sequentialStrategy;
+        this.concurrentStrategy = concurrentStrategy;
+        this.benchmark = benchmark;
     }
 
     public void start() {
@@ -43,12 +59,14 @@ public final class ApplicationUI {
             case 1 -> addManager();
             case 2 -> addTrainee();
             case 3 -> addProject();
-            case 4 -> allocateProjects();
-            case 5 -> displayManagerProjects();
-            case 6 -> displayUnallocatedTrainees();
-            case 7 -> displayAllManagers();
-            case 8 -> displayAllProjects();
-            case 9 -> displayAllTrainees();
+            case 4 -> allocateSequentially();
+            case 5 -> allocateConcurrently();
+            case 6 -> displayManagerProjects();
+            case 7 -> displayUnallocatedTrainees();
+            case 8 -> displayAllManagers();
+            case 9 -> displayAllProjects();
+            case 10 -> displayAllTrainees();
+            case 11 -> compareAllocationPerformance();
             case EXIT_OPTION -> {
                 return false;
             }
@@ -95,8 +113,14 @@ public final class ApplicationUI {
         writer.printSuccess("Project added successfully.");
     }
 
-    private void allocateProjects() {
-        AllocationResult result = service.allocateProjects();
+    private void allocateSequentially() {
+        AllocationResult result = service.allocateProjects(sequentialStrategy);
+
+        writer.printAllocationResult(result);
+    }
+
+    private void allocateConcurrently() {
+        AllocationResult result = service.allocateProjects(concurrentStrategy);
 
         writer.printAllocationResult(result);
     }
@@ -104,23 +128,34 @@ public final class ApplicationUI {
     private void displayManagerProjects() {
         long managerId = reader.readLong("Manager ID: ");
 
-        writer.printProjects(service.getProjectsByManager(managerId));
+        writer.printAllProjects(service.getProjectsByManager(managerId));
+    }
+
+    private void displayUnallocatedTrainees() {
+        writer.printUnallocatedTrainees(service.getUnallocatedTrainees());
     }
 
     private void displayAllManagers() {
-        writer.printManagers(service.getAllManagers());
+        writer.printAllManagers(service.getAllManagers());
     }
 
     private void displayAllProjects() {
-        writer.printProjects(service.getAllProjects());
+        writer.printAllProjects(service.getAllProjects());
     }
 
     private void displayAllTrainees() {
         writer.printAllTrainees(service.getAllTrainees());
     }
 
-    private void displayUnallocatedTrainees() {
-        writer.printUnallocatedTrainees(service.getUnallocatedTrainees());
+    private void compareAllocationPerformance() {
+        int projectCount = reader.readInt("Number of projects: ");
+        int traineeCount = reader.readInt("Number of trainees: ");
+
+        writer.printPrompt("Running allocation performance benchmark...");
+
+        BenchmarkResult[] results = benchmark.run(projectCount, traineeCount);
+
+        writer.printBenchmarkResults(results);
     }
 
 }

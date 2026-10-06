@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.gothamdeveloper.skillallocation.application.allocation.AllocationStrategy;
 import com.gothamdeveloper.skillallocation.domain.Manager;
 import com.gothamdeveloper.skillallocation.domain.Project;
 import com.gothamdeveloper.skillallocation.domain.Skill;
@@ -42,6 +43,17 @@ public class SkillAllocationService {
         LOGGER.info("Manager added: id={}, name={}", manager.getId(), manager.getName());
     }
 
+    private void ensureIdDoesNotExist(boolean exists, String entityName, long id) {
+        if (exists) {
+            throw new DuplicateEntityException(entityName + " already exists: " + id);
+        }
+    }
+
+    public Manager getManager(long id) {
+        return managerRepository.findById(id)
+                                .orElseThrow(() -> new EntityNotFoundException("Manager not found: " + id));
+    }
+
     public void addTrainee(long id, String name, Skill skill) {
         ensureIdDoesNotExist(traineeRepository.existsById(id), "Trainee", id);
 
@@ -66,52 +78,25 @@ public class SkillAllocationService {
                     project.getName(), manager.getId(), project.getRequiredSkill(), project.getOpenings());
     }
 
-    public AllocationResult allocateProjects() {
-        int projectsProcessed = 0;
-        int traineesAllocated = 0;
-        int unfilledOpenings  = 0;
+    public AllocationResult allocateProjects(AllocationStrategy strategy) {
+        Objects.requireNonNull(strategy, "Allocation strategy must not be null");
 
         List<Project> projects = projectRepository.findAll();
         List<Trainee> trainees = traineeRepository.findAll();
 
         LOGGER.info("Starting project allocation for {} projects and {} trainees", projects.size(), trainees.size());
 
-        for (Project project : projects) {
-            projectsProcessed++;
+        long start = System.nanoTime();
 
-            for (Trainee trainee : trainees) {
-                if (!project.hasAvailableOpening()) {
-                    break;
-                }
+        AllocationResult result = strategy.allocate(projects, trainees);
 
-                if (trainee.isAllocated()) {
-                    continue;
-                }
+        long elapsedNanos = System.nanoTime() - start;
 
-                if (!project.requiresSkill(trainee.getSkill())) {
-                    continue;
-                }
-
-                project.allocate(trainee);
-                traineesAllocated++;
-
-                LOGGER.debug("Trainee allocated: traineeId={}, projectId={}", trainee.getId(), project.getId());
-            }
-
-            unfilledOpenings += project.getOpenings();
-        }
-
-        AllocationResult result = new AllocationResult(projectsProcessed, traineesAllocated, unfilledOpenings);
-
-        LOGGER.info("Project allocation completed: projectsProcessed={}, traineesAllocated={}, unfilledOpenings={}",
-                    result.projectsProcessed(), result.traineesAllocated(), result.unfilledOpenings());
+        LOGGER.info("{} allocation completed in {} ms: projectsProcessed={}, traineesAllocated={}, unfilledOpenings={}",
+                    strategy.getName(), elapsedNanos / 1_000_000.0, result.projectsProcessed(),
+                    result.traineesAllocated(), result.unfilledOpenings());
 
         return result;
-    }
-
-    public Manager getManager(long id) {
-        return managerRepository.findById(id)
-                                .orElseThrow(() -> new EntityNotFoundException("Manager not found: " + id));
     }
 
     public Project getProject(long id) {
@@ -144,12 +129,6 @@ public class SkillAllocationService {
 
     public List<Trainee> getUnallocatedTrainees() {
         return traineeRepository.findUnallocated();
-    }
-
-    private void ensureIdDoesNotExist(boolean exists, String entityName, long id) {
-        if (exists) {
-            throw new DuplicateEntityException(entityName + " already exists: " + id);
-        }
     }
 
 }

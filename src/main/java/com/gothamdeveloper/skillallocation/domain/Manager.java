@@ -47,16 +47,16 @@ public final class Manager {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (!(o instanceof Manager manager)) {
             return false;
         }
         return id == manager.id && Objects.equals(name, manager.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
     }
 
     @Override

@@ -40,10 +40,6 @@ public enum Skill {
         this.aliases = aliases;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
     public static Skill from(String value) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("Skill must not be blank.");
@@ -57,6 +53,10 @@ public enum Skill {
                      .orElseThrow(() -> new IllegalArgumentException("Unsupported skill: " + value));
     }
 
+    private static String normalize(String value) {
+        return value.trim().toLowerCase(Locale.ROOT);
+    }
+
     private boolean matches(String normalizedValue) {
         if (normalize(displayName).equals(normalizedValue)) {
             return true;
@@ -65,7 +65,7 @@ public enum Skill {
         return Arrays.stream(aliases).map(Skill::normalize).anyMatch(normalizedValue::equals);
     }
 
-    private static String normalize(String value) {
-        return value.trim().toLowerCase(Locale.ROOT);
+    public String getDisplayName() {
+        return displayName;
     }
 }
