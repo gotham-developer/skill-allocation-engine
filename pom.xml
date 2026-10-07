@@ -16,22 +16,22 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependency versions -->
-        <log4j2.version>2.26.1</log4j2.version>
+        <log4j.version>2.26.1</log4j.version>
     </properties>
 
     <dependencies>
-        <!-- Log4j2 API used by application code -->
+        <!-- Log4j API used by application code -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>${log4j2.version}</version>
+            <version>${log4j.version}</version>
         </dependency>
 
-        <!-- Log4j2 implementation that writes the log output -->
+        <!-- Log4j implementation that writes the log output -->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>${log4j2.version}</version>
+            <version>${log4j.version}</version>
         </dependency>
     </dependencies>
 
